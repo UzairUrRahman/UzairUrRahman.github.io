@@ -9,7 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "clean": "rm -rf dist",
-    "deploy": "npm run clean && npm run build && cp -R dist/* ./ && git add . && git commit -m \"Deploy site\" || true && git push origin main",
+    "deploy": "npm run build && rm -rf assets guides index.html && cp -R dist/* ./ && git add . && git commit -m \"Deploy site\" || true && git push origin main",
     "lint": "eslint .",
     "preview": "vite preview"
   },
