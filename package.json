@@ -8,11 +8,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "clean": "rm -rf dist",
+    "deploy": "npm run clean && npm run build && cp -R dist/* ./ && git add . && git commit -m \"Deploy site\" || true && git push origin main",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist -r https://github.com/UzairUrRahman/UzairUrRahman.github.io.git -f"
-
+    "preview": "vite preview"
   },
+  
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

@@ -3,7 +3,10 @@ import ReactMarkdown from "react-markdown";
 
 const guides = [
   { title: "Apache Setup", file: "/guides/apache.md" },
+  { title: "Docker Basics", file: "/guides/docker.md" },
+  { title: "Nginx Setup", file: "/guides/nginx.md" }, // new
 ];
+
 
 export default function App() {
   const [content, setContent] = useState("Select a guide from the sidebar");
@@ -18,7 +21,7 @@ export default function App() {
     <div style={{ display: "flex", height: "100vh" }}>
       <aside
         style={{
-          width: 260,
+          width: 100,
           padding: 16,
           borderRight: "1px solid #ddd",
         }}
