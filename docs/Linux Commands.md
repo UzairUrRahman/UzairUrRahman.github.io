@@ -119,3 +119,161 @@ Tiny commands. Massive impact. Once you learn these, Linux starts playing on eas
     
    This feels like magic the first time. You can copy command output directly into your clipboard — no mouse, no highlighting, no context switching. It's small, but once you adopt it, it's hard to go back.
    
+
+   ## 3. Analyze Process Behavior
+
+Once we've identified suspicious processes (high CPU, memory, or stuck in D state), the next question is: Why is the process consuming resources?
+
+### Inspect Open Files / Network / Resources
+
+```
+lsof -p <PID>
+```
+
+### Monitor Its Activity
+
+```
+top -p <PID>
+```
+
+### Check for I/O Bottlenecks (If stat is D - blocked on I/O)
+
+-   ```
+    iotop -o
+    ```
+    
+    # Per-process I/O usage
+-   ```
+    iostat -x 1 5
+    ```
+    
+    # Disk device performance
+-   ```
+    vmstat 1 5
+    ```
+    
+    # CPU and I/O wait
+
+### Trace the Process (Optional, Advanced)
+
+```
+strace -p <PID>
+```
+
+### Investigate Threads (Multi-threaded app may have one hot thread consuming CPU)
+
+```
+ps -L -p <PID> -o pid,tid,psr,%cpu,stat,comm
+```
+
+## Zombies Process
+
+The process has terminated, but its parent hasn't reaped it yet. It consumes no CPU or memory except the process table entry.
+
+```
+ps -eo pid,ppid,stat,wchan,cmd | awk '$3 ~ /Z/'
+```
+
+## Uninterruptible Sleep
+
+High load does not always mean high CPU usage. Very often, it means processes are blocked waiting for disk, memory, or other I/O.
+
+### Processes in D State (Uninterruptible Sleep)
+
+```
+ps -eo pid,ppid,stat,wchan,cmd | awk '$3 ~ /D/'
+```
+
+# Output
+
+```
+
+ PID   PPID  STAT  WCHAN        CMD
+ 3241  1     D     io_schedule  postgres: writer process
+ 3242  1     D     io_schedule  postgres: checkpointer
+
+```
+
+From this output, we can conclude that multiple processes are stuck in D state (uninterruptible sleep waiting for I/O), indicating that the system is experiencing a disk or storage bottleneck, not an application-level problem.
+
+## 2. Inspect Processes
+
+Once we know the system is under pressure, the next question is simple: which process is responsible?
+
+### Top 10 Memory Consumers
+
+```
+ps -eo pid,ppid,%cpu,%mem,rss,stat,wchan,cmd --sort=-%mem | head -10
+```
+
+### Top 10 CPU Consumers
+
+```
+ps -eo pid,ppid,%cpu,%mem,rss,stat,wchan,cmd --sort=-%cpu | head -10
+```
+
+pid — process ID
+
+ppid — parent process (helps trace where it came from)
+
+%cpu — Percentage of CPU used
+
+%mem — Percentage of RAM used
+
+rss — Resident Set Size (actual memory used in KB)
+
+stat — process state. Things to watch for:
+
+-   **R**: Running (Application is actively using CPU)
+-   **S**: Sleeping (Process is waiting on an event or lock)
+-   **D**: Uninterruptible sleep (usually waiting on I/O)
+-   **Z**: Zombie (terminated but not reaped by parent)
+
+wchan — kernel function the process is waiting in
+
+cmd — command that started the process
+
+## 1. Start With the Kernel's Perspective
+
+Before digging into logs or blaming applications, let's ask a simple question: is the kernel under pressure?
+
+To answer that, we can check the system load using:
+
+```
+uptime
+```
+
+# Output
+
+```
+14:22:01 up 120 days,  3 users,  load average: 12.4, 10.8, 9.6
+```
+
+14:22:01 — The current system time.
+
+up 120 days — This server has been running for about 4 months (120 days) without a reboot.
+
+3 users — The number of users currently logged into the system (via SSH or local terminal).
+
+load average: 12.4, 10.8, 9.6 — Represents the average system load over three different time intervals:
+
+-   12.4: The last 1 minute
+-   10.8: The last 5 minutes
+-   9.6: The last 15 minutes
+
+### Interpreting the Load
+
+Load is the number of processes that are either using the CPU or waiting for the CPU (runnable state), plus processes waiting for I/O (like reading from a disk).
+
+Is a load of 12.4 "High"? It depends entirely on how many CPU cores we have:
+
+-   On a 4-core system — A load of 12 means the system is running at roughly 300% of capacity, which means the kernel has a long queue of tasks waiting to run.
+-   On a 16-core system — The same load of 12 is only about 75% utilized, which might be completely fine.
+
+### Reading the Trend
+
+By looking at all three numbers together, we can tell if the problem is getting better or worse:
+
+-   1m > 5m > 15m — load is increasing, things are getting worse
+-   1m < 5m < 15m — load is dropping, system is recovering
+-   1m ~ 5m ~ 15m — The load is consistent (stable).
