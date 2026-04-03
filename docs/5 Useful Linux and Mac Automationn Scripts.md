@@ -1,6 +1,5 @@
 # 5 Automation Scripts Every Linux User Should Know
 
-
 ## Smart Folder Organizer
 
 Smart folder organizer script cleans up messy folders for you. If you've ever opened your Downloads folder and seen dozens of PDFs, images, installers, and random files all mixed together, this script solves that problem automatically. Instead of manually dragging files into folders, the script looks at each file, figures out what type it is, and moves it into the right place.
