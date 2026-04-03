@@ -67,9 +67,12 @@
 import { NavLink } from "react-router-dom";
 import { docs } from "../utils/docsIndex";
 
+
+
 export default function Sidebar() {
   return (
     <aside style={styles.sidebar}>
+      
       {docs.map(doc => (
         <NavLink
           key={doc.slug}
@@ -83,29 +86,67 @@ export default function Sidebar() {
         </NavLink>
       ))}
     </aside>
+    
   );
 }
 
 const styles = {
+  // sidebar: {
+  //   // width: 260,
+  //   // padding: "1rem",
+  //   // background: "var(--sidebar-bg)",
+  //   // borderRight: "1px solid #e5e7eb"
+    
+  // },
   sidebar: {
-    width: 260,
-    padding: "1rem",
-    background: "var(--sidebar-bg)",
-    borderRight: "1px solid #e5e7eb"
-  },
-  link: {
-    display: "block",
-    padding: "1rem 1rem",
-    borderRadius: 8,
-    textDecoration: "none",
-    color: "var(--text)",
-    marginBottom: 4,
-    borderBottom: "1px solid #ccc"
+  width: 260,
+  padding: "1rem",
+  background: "var(--sidebar-bg)",
+  borderRight: "1px solid #e5e7eb",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  height: "100vh",
+  overflowY: "auto",
+  overflowX: "hidden"
+},
+content: {
+  marginLeft: 260,
+  flex: 1,
+  overflowY: "auto",
+  padding: "2rem"
+},
+  // link: {
+  //   display: "block",
+  //   padding: "1rem 1rem",
+  //   borderRadius: 8,
+  //   textDecoration: "none",
+  //   color: "var(--text)",
+  //   marginBottom: 4,
+  //   borderBottom: "1px solid #ccc"
 
-  },
-  active: {
-    background: "var(--active-bg)",
-    color: "var(--active-text)",
-    fontWeight: 600
-  }
+  // },
+  // active: {
+  //   background: "var(--active-bg)",
+  //   color: "var(--active-text)",
+  //   fontWeight: 600
+  // }
+
+  link: {
+  display: "block",
+  padding: "0.6rem 0.75rem",
+  borderRadius: 8,
+  textDecoration: "none",
+  color: "var(--text)",
+  marginBottom: 4,
+  transition: "all 0.2s ease",
+  borderBottom: "1px solid #ccc"
+
+},
+active: {
+  background: "var(--active-bg)",
+  color: "var(--active-text)",
+  fontWeight: 600,
+  transform: "translateX(4px)"
+}
 };
