@@ -3,30 +3,30 @@ import Sidebar from "./components/Sidebar";
 import Docs from "./pages/Docs";
 import { docs } from "./utils/docsIndex";
 import "./styles/markdown.css";
-import { ThemeProvider, useTheme } from "./context/ThemeContext";
+// import { ThemeProvider, useTheme } from "./context/ThemeContext";
 
-function ThemeToggleButton() {
-  const { theme, toggleTheme } = useTheme();
-  return (
-    <button
-      onClick={toggleTheme}
-      style={{
-        position: "fixed",
-        top: 10,
-        right: 10,
-        padding: "6px 12px",
-        borderRadius: 6,
-        border: "none",
-        cursor: "pointer",
-        background: theme === "light" ? "#111" : "#fff",
-        color: theme === "light" ? "#fff" : "#111"
-      }}
-    >
-      {theme === "light" ? "Dark Mode" : "Light Mode"}
-    </button>
+// function ThemeToggleButton() {
+//   const { theme, toggleTheme } = useTheme();
+//   return (
+//     <button
+//       onClick={toggleTheme}
+//       style={{
+//         position: "fixed",
+//         top: 10,
+//         right: 10,
+//         padding: "6px 12px",
+        // borderRadius: 6,
+//         border: "none",
+//         cursor: "pointer",
+//         background: theme === "light" ? "#111" : "#fff",
+//         color: theme === "light" ? "#fff" : "#111"
+//       }}
+//     >
+//       {theme === "light" ? "Dark Mode" : "Light Mode"}
+//     </button>
     
-  );
-}
+//   );
+// }
 
 export default function App() {
   const styles = {
@@ -63,13 +63,13 @@ export default function App() {
 </div>
     </HashRouter>
   );
-  <ThemeProvider>
-      <Router>
-        <ThemeToggleButton />
-        <Routes>
-          <Route path="/docs/:slug" element={<Docs />} />
-          <Route path="/docs" element={<Docs />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+  // <ThemeProvider>
+  //     <Router>
+  //       <ThemeToggleButton />
+  //       <Routes>
+  //         <Route path="/docs/:slug" element={<Docs />} />
+  //         <Route path="/docs" element={<Docs />} />
+  //       </Routes>
+  //     </Router>
+  //   </ThemeProvider>
 }
