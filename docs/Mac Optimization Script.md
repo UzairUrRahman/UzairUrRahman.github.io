@@ -93,9 +93,19 @@ chmod +x ~/.wakeup
 brew services start sleepwatcher
 ```
 
-## ✅ Done 🎉
+## Done 🎉
 
 Now your script will:
 
 -   Run manually anytime ✅
 -   Run automatically every time your Mac wakes up ✅
+
+## Optional (Manual)
+
+### Check Login Items:
+```
+osascript -e 'tell application "System Events" to get the name of every login item.
+```
+Then remove heavy apps via System Settings → General → Login Items
+
+If you want, I can also write a “one-click Mac reset for network + 5GHz WiFi” script that fixes Mole’s possible side effects without touching Notes or Chrome. Do you want me to do that?
